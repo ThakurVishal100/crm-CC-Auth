@@ -1,0 +1,11 @@
+CREATE VIEW vw_applied_access_policies AS SELECT a.policy_id,a.access_name,a.access_desc,a.`status` AS policy_status,a.`creation_date`,a.`last_update`,
+a.`master_policy_id`,b.`policy_name`,b.`descp` AS master_policy_descp,b.`status` AS master_policy_status,b.`category` AS master_policy_category,b.`avl_for_suonly`,b.`is_addon_policy`,
+f.`role_id`,f.`role_name`,f.`role_desc`,f.`role_catg`,f.`owner_type`,f.`owner_id`,f.`defa_access_policy_id` AS applied_master_policy_id,
+a.`sys_access_lvlid`,c.`sys_access_lvlname`,c.`sys_access_lvldescp`, c.`status` AS access_level_status,
+a.`service_id`,d.`service_name`,d.`service_descp`,d.`service_catg`,d.`parent_service_id`,d.`status` AS service_status,
+a.`menu_id`,e.`menu_name`,e.`menu_icon`,e.`visible_name` AS menu_name_to_display,e.`hint_text`,e.`menu_descp`,e.`menu_level`,e.`has_child`,e.`is_child_menu`,e.`show_order`,e.`target_link`,e.`target_type`,e.`status` AS menu_status,e.`su_access_only`
+FROM tbl_access_policy_details a,tbl_access_policy_master b ,tbl_sys_access_levels c,tbl_service_details d,tbl_system_menu e,tbl_user_roles f
+WHERE a.`master_policy_id`=b.`master_policy_id` AND a.`sys_access_lvlid`=c.`sys_access_lvlid` AND a.`service_id`=d.`service_id` AND a.`menu_id`=e.`menu_id` AND f.`defa_access_policy_id`=b.`master_policy_id`
+AND b.`is_addon_policy`='NO' AND a.`status`='ACTIVE' AND b.`status`='ACTIVE' AND c.`status`='ACTIVE' AND d.`status`='ACTIVE' AND e.`status`='ACTIVE' AND f.status='ACTIVE' ;
+
+--------------------------------------------
