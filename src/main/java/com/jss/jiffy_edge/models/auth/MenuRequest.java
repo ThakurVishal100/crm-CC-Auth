@@ -13,6 +13,10 @@ public class MenuRequest {
 	private String superUserOnly;
 	private String status;
 
+	// Add these two new fields
+	private Integer parentMenuId;
+	private Boolean isChildMenu;
+
 	public String getMenuName() {
 		return menuName;
 	}
@@ -99,5 +103,22 @@ public class MenuRequest {
 
 	public void setStatus(String status) {
 		this.status = status;
+	}
+
+	// Add Getters and Setters for the new fields
+	public Integer getParentMenuId() {
+		return parentMenuId;
+	}
+
+	public void setParentMenuId(Integer parentMenuId) {
+		this.parentMenuId = parentMenuId;
+	}
+
+	public Boolean getIsChildMenu() {
+		return isChildMenu;
+	}
+
+	public void setIsChildMenu(Boolean isChildMenu) {
+		this.isChildMenu = isChildMenu;
 	}
 }

@@ -74,7 +74,7 @@ public class TblSystemMenu {
 	@Column(name = "su_access_only")
 	private YesNo superUserOnly;
 
-	// --- ENUMS ---
+
 	public enum TargetType {
 		LINK, NONE
 	}
@@ -87,7 +87,7 @@ public class TblSystemMenu {
 		YES, NO
 	}
 
-	// --- Getters and Setters ---
+
 	public Integer getMenuId() {
 		return menuId;
 	}

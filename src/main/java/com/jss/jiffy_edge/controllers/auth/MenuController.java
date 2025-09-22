@@ -2,7 +2,6 @@ package com.jss.jiffy_edge.controllers.auth;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,7 +29,7 @@ public class MenuController {
 	}
 
 	@GetMapping
-	@Operation(summary = "get All menus", description = "")
+	@Operation(summary = "get All menus", description = "this gives all menus")
 	public ResponseEntity<List<MenuResponse>> getAllMenus() {
 		return ResponseEntity.ok(menuService.getAllMenus());
 	}
@@ -48,7 +47,7 @@ public class MenuController {
 	}
 
 	@DeleteMapping("/{id}")
-	@Operation(summary = "delete the menu", description = "")
+	@Operation(summary = "delete the menu", description = "this api will delete all the menus")
 	public ResponseEntity<Void> deleteMenu(@PathVariable Integer id) {
 		menuService.deleteMenu(id);
 		return ResponseEntity.noContent().build();
