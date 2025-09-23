@@ -15,6 +15,7 @@ import com.jss.jiffy_edge.dao.repo.auth.TblUsersRepository;
 import com.jss.jiffy_edge.models.auth.UserLoginRequest;
 import com.jss.jiffy_edge.models.auth.UserResponse;
 import com.jss.jiffy_edge.models.auth.UserSignupRequest;
+import com.jss.jiffy_edge.models.auth.UserUpdateRequest;
 
 @Service
 public class AuthServiceImpl implements AuthService {
@@ -61,4 +62,42 @@ public class AuthServiceImpl implements AuthService {
 		return userConvertor.entityToResponse(entity);
 	}
 
+	@Override
+	public UserResponse updateUser(Integer userId, UserUpdateRequest request) {
+		TblUsers user = userRepository.findById(userId)
+				.orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+
+		user.setName(request.getName());
+		user.setEmail(request.getEmail());
+		user.setMobile(request.getMobile());
+		if (request.getPassword() != null && !request.getPassword().isEmpty()) {
+			user.setPassword(request.getPassword());
+		}
+		if (request.getRoleId() != null) {
+			TblUserRoles role = userRoleRepository.findById(request.getRoleId())
+					.orElseThrow(() -> new RuntimeException("Role not found with id: " + request.getRoleId()));
+			user.setRole(role);
+		}
+		user.setLastUpdate(new Date());
+		TblUsers updatedUser = userRepository.save(user);
+		return userConvertor.entityToResponse(updatedUser);
+	}
+
+	@Override
+	public void deleteUser(Integer userId) {
+		// Find the user by their ID, or throw an exception if not found.
+		TblUsers user = userRepository.findById(userId)
+				.orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+
+		// Set the user's status to INACTIVE.
+		user.setStatus(TblUsers.UserStatus.INACTIVE);
+
+		// Update the 'lastUpdate' timestamp.
+		user.setLastUpdate(new Date());
+
+		// Save the changes to the database.
+		userRepository.save(user);
+	}
+
 }
+
