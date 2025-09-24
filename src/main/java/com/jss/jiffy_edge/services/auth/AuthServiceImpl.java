@@ -85,17 +85,13 @@ public class AuthServiceImpl implements AuthService {
 
 	@Override
 	public void deleteUser(Integer userId) {
-		// Find the user by their ID, or throw an exception if not found.
 		TblUsers user = userRepository.findById(userId)
 				.orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
 
-		// Set the user's status to INACTIVE.
 		user.setStatus(TblUsers.UserStatus.INACTIVE);
 
-		// Update the 'lastUpdate' timestamp.
 		user.setLastUpdate(new Date());
 
-		// Save the changes to the database.
 		userRepository.save(user);
 	}
 

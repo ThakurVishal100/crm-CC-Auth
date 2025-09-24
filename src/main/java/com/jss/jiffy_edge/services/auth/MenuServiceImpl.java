@@ -50,10 +50,11 @@ public class MenuServiceImpl implements MenuService {
 
 	@Override
 	public void deleteMenu(Integer id) {
-		if (!menuRepository.existsById(id)) {
-			throw new RuntimeException("Menu not found");
-		}
-		menuRepository.deleteById(id);
+		TblSystemMenu menu = menuRepository.findById(id)
+				.orElseThrow(() -> new RuntimeException("Menu not found with id: " + id));
+		menu.setStatus(TblSystemMenu.Status.INACTIVE);
+		menu.setLastUpdated(LocalDateTime.now());
+		menuRepository.save(menu);
 	}
 
 	private void updateMenuFromRequest(TblSystemMenu menu, MenuRequest request) {

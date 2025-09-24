@@ -1,11 +1,9 @@
 package com.jss.jiffy_edge.services;
 
-import java.util.List;
-
-import com.jss.jiffy_edge.models.auth.UserResponse;
+import org.springframework.http.ResponseEntity;
 
 public interface UserService {
 
-	List<UserResponse> getAllUsers();
+	ResponseEntity<?> getAllUsers(Integer requesterId);
 
 }

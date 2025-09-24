@@ -79,4 +79,12 @@ public class ServiceDetailsService {
 		return serviceDetailsRepository.save(existingService);
 	}
 
+    public ServiceDetails deleteService(Integer serviceId) {
+		ServiceDetails service=serviceDetailsRepository.findById(serviceId).
+				orElseThrow(()->new RuntimeException("ServiceId not found with id:"+serviceId));
+		service.setStatus(ServiceDetails.Status.INACTIVE);
+		service.setUpdatedOn(LocalDateTime.now());
+		serviceDetailsRepository.save(service);
+		return service;
+	}
 }

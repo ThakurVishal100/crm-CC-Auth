@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import com.jss.jiffy_edge.dao.entities.auth.TblUsers;
+import com.jss.jiffy_edge.dao.entities.auth.TblUsers.UserCategory;
 
 import jakarta.transaction.Transactional;
 
@@ -19,10 +20,8 @@ public interface TblUsersRepository extends JpaRepository<TblUsers, Integer> {
 
 	Optional<TblUsers> findByUserIdAndRole_RoleId(Integer userId, Integer roleId);
 
-
 	List<TblUsers> findByLoginName(String loginName);
 
-	
 	Optional<TblUsers> findByEmail(String email);
 
 	@Transactional
@@ -30,5 +29,8 @@ public interface TblUsersRepository extends JpaRepository<TblUsers, Integer> {
 	@Query("UPDATE TblUsers u SET u.userCatg = :role WHERE u.userId = :userId")
 	void updateUserRole(Integer userId, String role);
 
-	
+	List<TblUsers> findByUserCatgAndUserIdNot(UserCategory userCatg, Integer userId);
+
+	List<TblUsers> findByUserIdNot(Integer userId);
 }
+
