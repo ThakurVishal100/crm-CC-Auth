@@ -1,11 +1,12 @@
 package com.jss.jiffy_edge.dao.repo.auth;
 
+import com.jss.jiffy_edge.dao.entities.auth.TblSystemMenu;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.jss.jiffy_edge.dao.entities.auth.TblSystemMenu;
+import java.util.List;
 
 @Repository
 public interface TblSystemMenuRepository extends JpaRepository<TblSystemMenu, Integer> {
-	
+    List<TblSystemMenu> findByServiceId(Integer serviceId);
 }
