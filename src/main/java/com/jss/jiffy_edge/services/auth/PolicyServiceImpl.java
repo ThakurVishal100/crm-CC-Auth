@@ -81,19 +81,16 @@ public class PolicyServiceImpl implements PolicyService {
 		TblUserRoles targetRole = tblUserRolesRepository.findById(request.getRoleId())
 				.orElseThrow(() -> new RuntimeException("Target role not found with id: " + request.getRoleId()));
 
-		// Security Check: Prevent users from editing roles above them
 		if (requesterRoleId >= targetRole.getRoleId()) {
 			throw new AccessDeniedException("You are not authorized to modify permissions for this role.");
 		}
 
-		// Security Check: Ensure only system users can manage the Root User's ACL
 		if (targetRole.getRoleId().equals(ROOT_USER_ROLE_ID)) {
 			if (requesterRole.getRoleCatg() != TblUsers.UserCategory.SYSTEM_USER) {
 				throw new AccessDeniedException("You are not authorized to modify the Root User's permissions.");
 			}
 		}
 
-		// --- Placeholder for Permission Granting Logic ---
 		System.out.println("User with role " + requesterRoleId + " is granting permission for policy " + request.getPolicyId() + " to role " + request.getRoleId());
 	}
 
@@ -108,10 +105,8 @@ public class PolicyServiceImpl implements PolicyService {
 		}
 
 		if (requesterRole.getRoleCatg() == TblUsers.UserCategory.SYSTEM_USER) {
-			// System users can see all policies except those for the super user
 			return accessPolicyMasterRepository.findByAvlForSuonlyNot(1);
 		} else {
-			// External users can only see external policies
 			return accessPolicyMasterRepository.findByCategory(AccessPolicyMaster.Category.EXTERNAL);
 		}
 	}
@@ -121,9 +116,7 @@ public class PolicyServiceImpl implements PolicyService {
 		TblUsers requester = tblUsersRepository.findById(requesterId)
 				.orElseThrow(() -> new RuntimeException("Requester not found."));
 
-		// Allow users to modify their own policies
 		if (requesterId.equals(request.getTargetUserId())) {
-			// Logic to update the user's own role/policy
 			TblUsers targetUser = tblUsersRepository.findById(request.getTargetUserId()).orElseThrow(() -> new RuntimeException("User not found"));
 			TblUserRoles newRole = tblUserRolesRepository.findById(request.getRoleId()).orElseThrow(() -> new RuntimeException("Role not found"));
 			targetUser.setRole(newRole);
@@ -131,7 +124,6 @@ public class PolicyServiceImpl implements PolicyService {
 			return;
 		}
 
-		// If the user is external, check if they are managing the target user
 		if (requester.getUserCatg() == TblUsers.UserCategory.EXTERNAL_USER) {
 			boolean isManager = userRelationshipRepository.existsByManager_UserIdAndSubordinate_UserId(requesterId, request.getTargetUserId());
 			if (!isManager) {
@@ -139,7 +131,6 @@ public class PolicyServiceImpl implements PolicyService {
 			}
 		}
 
-		// Logic to update the user's role/policy
 		TblUsers targetUser = tblUsersRepository.findById(request.getTargetUserId()).orElseThrow(() -> new RuntimeException("User not found"));
 		TblUserRoles newRole = tblUserRolesRepository.findById(request.getRoleId()).orElseThrow(() -> new RuntimeException("Role not found"));
 		targetUser.setRole(newRole);
@@ -149,7 +140,9 @@ public class PolicyServiceImpl implements PolicyService {
 
 	@Override
 	public List<PolicyResponse> getPoliciesByRoleId(Integer roleId) {
-		return Collections.emptyList();
+		return vwAppliedAccessPoliciesRepository.findByRoleId(roleId).stream()
+				.map(this::mapToPolicyResponse)
+				.collect(Collectors.toList());
 	}
 
 	@Override
@@ -160,10 +153,13 @@ public class PolicyServiceImpl implements PolicyService {
 
 	@Override
 	public List<PolicyResponse> getPoliciesByUserId(Integer userId) {
+		TblUsers user = tblUsersRepository.findById(userId)
+				.orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
 
-		return Collections.emptyList();
+		Integer roleId = user.getRole().getRoleId();
+
+		return getAppliedPoliciesByRoleId(roleId);
 	}
-
 	@Override
 	public List<ServiceDetails> getAllServices() {
 		return serviceDetailsRepository.findAll();

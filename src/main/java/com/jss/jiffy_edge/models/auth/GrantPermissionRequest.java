@@ -4,9 +4,9 @@ public class GrantPermissionRequest {
 
     private Integer roleId;
     private Long policyId;
-    private String accessLevel; // e.g., "READ", "WRITE", "DELETE"
+    private String accessLevel; //
 
-    // Getters and Setters
+
     public Integer getRoleId() {
         return roleId;
     }

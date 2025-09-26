@@ -10,7 +10,6 @@ public class MasterPolicyRequest {
     private AccessPolicyMaster.Category category;
     private Integer avlForSuonly;
 
-    // Getters and Setters
     public String getPolicyName() {
         return policyName;
     }

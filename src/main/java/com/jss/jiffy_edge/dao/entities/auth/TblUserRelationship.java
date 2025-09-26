@@ -18,7 +18,7 @@ public class TblUserRelationship {
     @JoinColumn(name = "subordinate_id", nullable = false)
     private TblUsers subordinate;
 
-    // Getters and Setters
+
     public Long getId() {
         return id;
     }

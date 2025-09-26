@@ -5,7 +5,6 @@ public class UpdateUserPolicyRequest {
     private Integer targetUserId;
     private Integer roleId;
 
-    // Getters and Setters
     public Integer getTargetUserId() {
         return targetUserId;
     }

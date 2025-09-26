@@ -15,7 +15,7 @@ public class PermissionGrantResponse {
         this.menus = menus;
     }
 
-    // Getters and Setters
+
     public ServiceDetails getService() {
         return service;
     }
