@@ -13,6 +13,8 @@ import com.jss.jiffy_edge.models.auth.*;
 public interface PolicyService {
     AccessPolicyMaster createMasterPolicy(MasterPolicyRequest request);
 
+    void deleteMasterPolicy(Integer policyId);
+
     List<AccessPolicyMaster> getAllMasterPolicies(Integer requesterRoleId);
 
     List<PolicyResponse> getPoliciesByRoleId(Integer roleId);

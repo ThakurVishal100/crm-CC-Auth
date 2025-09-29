@@ -63,6 +63,14 @@ public class PolicyServiceImpl implements PolicyService {
 	}
 
 	@Override
+	public void deleteMasterPolicy(Integer policyId) {
+		AccessPolicyMaster masterPolicy = accessPolicyMasterRepository.findById(policyId)
+				.orElseThrow(() -> new RuntimeException("Master policy not found with id: " + policyId));
+		masterPolicy.setStatus(AccessPolicyMaster.Status.INACTIVE);
+		accessPolicyMasterRepository.save(masterPolicy);
+	}
+
+	@Override
 	public List<PermissionGrantResponse> getPermissionsForGrantPage() {
 		List<ServiceDetails> services = serviceDetailsRepository.findAll();
 		return services.stream()

@@ -54,6 +54,13 @@ public class PolicyController {
         return ResponseEntity.ok(policyService.getAllMasterPolicies(requesterRoleId));
     }
 
+    @DeleteMapping("/master-policies/{policyId}")
+    @Operation(summary = "Delete a master policy", description = "Deletes a master policy by setting its status to INACTIVE.")
+    public ResponseEntity<Void> deleteMasterPolicy(@PathVariable Integer policyId) {
+        policyService.deleteMasterPolicy(policyId);
+        return ResponseEntity.noContent().build();
+    }
+
     @GetMapping("/policies/role/{roleId}")
     @Operation(summary = "Get policies by Role ID", description = "Returns a list of policies associated with a specific role.")
     public ResponseEntity<List<PolicyResponse>> getPoliciesByRoleId(@PathVariable Integer roleId) {
