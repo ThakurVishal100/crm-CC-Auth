@@ -16,7 +16,7 @@ import jakarta.persistence.Table;
 public class TblSystemMenu {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+//	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "menu_id")
 	private Integer menuId;
 

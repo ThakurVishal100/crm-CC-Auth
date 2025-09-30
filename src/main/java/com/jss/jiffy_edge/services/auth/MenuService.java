@@ -7,8 +7,11 @@ import com.jss.jiffy_edge.models.auth.MenuResponse;
 
 public interface MenuService {
 	List<MenuResponse> getAllMenus();
-	
-	MenuResponse createMenu(MenuRequest request);
+
+    List<MenuResponse> getMenusByServiceId(Integer serviceId);
+
+
+    MenuResponse createMenu(MenuRequest request);
     MenuResponse updateMenu(Integer id, MenuRequest request);
     void deleteMenu(Integer id);
 }

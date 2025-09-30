@@ -34,6 +34,12 @@ public class MenuController {
 		return ResponseEntity.ok(menuService.getAllMenus());
 	}
 
+	@GetMapping("/by-service/{serviceId}")
+	@Operation(summary = "Get menus by Service ID", description = "This gives all menus for a specific service ID")
+	public ResponseEntity<List<MenuResponse>> getMenusByServiceId(@PathVariable Integer serviceId) {
+		return ResponseEntity.ok(menuService.getMenusByServiceId(serviceId));
+	}
+
 	@PostMapping
 	@Operation(summary = "create new menu", description = "this api will create a new menu")
 	public ResponseEntity<MenuResponse> createMenu(@RequestBody MenuRequest request) {
