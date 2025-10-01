@@ -9,5 +9,5 @@ public interface AuthService {
     UserResponse signup(UserSignupRequest request);
     UserResponse login(UserLoginRequest request);
     UserResponse updateUser(Integer userId, UserUpdateRequest request);
-    void deleteUser(Integer userId);
+    void deactivateUser(Integer userId);
 }

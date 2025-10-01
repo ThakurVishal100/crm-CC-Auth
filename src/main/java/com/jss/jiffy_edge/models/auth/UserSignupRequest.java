@@ -6,7 +6,7 @@ public class UserSignupRequest {
 	private String password;
 	private String mobile;
 
-//	    private Integer roleId;
+	//	    private Integer roleId;
 	public String getName() {
 		return name;
 	}

@@ -28,4 +28,3 @@ public class CategorizedUsersResponse {
         this.externalUsers = externalUsers;
     }
 }
-

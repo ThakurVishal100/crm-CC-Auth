@@ -1,5 +1,6 @@
 package com.jss.jiffy_edge.services.auth;
 
+import com.jss.jiffy_edge.convertors.auth.PolicyConverter;
 import com.jss.jiffy_edge.dao.entities.auth.*;
 import com.jss.jiffy_edge.dao.repo.auth.*;
 import com.jss.jiffy_edge.models.SystemAccessPolicyRequest;
@@ -9,8 +10,6 @@ import org.springframework.stereotype.Service;
 
 import java.nio.file.AccessDeniedException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -47,18 +46,17 @@ public class PolicyServiceImpl implements PolicyService {
 	@Autowired
 	private VwAppliedAccessPoliciesRepository vwAppliedAccessPoliciesRepository;
 
+	@Autowired
+	private PolicyConverter policyConverter;
+
+
 	private static final Integer SUPER_USER_ROLE_ID = 1;
 	private static final Integer ROOT_USER_ROLE_ID = 2;
 
 
 	@Override
 	public AccessPolicyMaster createMasterPolicy(MasterPolicyRequest request) {
-		AccessPolicyMaster masterPolicy = new AccessPolicyMaster();
-		masterPolicy.setPolicyName(request.getPolicyName());
-		masterPolicy.setDescp(request.getDescp());
-		masterPolicy.setStatus(request.getStatus());
-		masterPolicy.setCategory(request.getCategory());
-		masterPolicy.setAvlForSuonly(request.getAvlForSuonly());
+		AccessPolicyMaster masterPolicy = policyConverter.toMasterEntity(request);
 		return accessPolicyMasterRepository.save(masterPolicy);
 	}
 
@@ -149,13 +147,13 @@ public class PolicyServiceImpl implements PolicyService {
 	@Override
 	public List<PolicyResponse> getPoliciesByRoleId(Integer roleId) {
 		return vwAppliedAccessPoliciesRepository.findByRoleId(roleId).stream()
-				.map(this::mapToPolicyResponse)
+				.map(policyConverter::toPolicyResponse)
 				.collect(Collectors.toList());
 	}
 
 	@Override
 	public List<PolicyResponse> getAppliedPoliciesByRoleId(Integer roleId) {
-		return vwAppliedAccessPoliciesRepository.findByRoleId(roleId).stream().map(this::mapToPolicyResponse)
+		return vwAppliedAccessPoliciesRepository.findByRoleId(roleId).stream().map(policyConverter::toPolicyResponse)
 				.collect(Collectors.toList());
 	}
 
@@ -185,7 +183,7 @@ public class PolicyServiceImpl implements PolicyService {
 
 	@Override
 	public AccessPolicyDetails createAccessPolicy(SystemAccessPolicyRequest request) {
-		AccessPolicyDetails policy = new AccessPolicyDetails();
+		AccessPolicyDetails policy = policyConverter.toDetailsEntity(request);
 		return updatePolicyFromRequest(policy, request);
 	}
 
@@ -198,12 +196,13 @@ public class PolicyServiceImpl implements PolicyService {
 	public AccessPolicyDetails updateAccessPolicy(Long policyId, SystemAccessPolicyRequest request) {
 		AccessPolicyDetails policy = accessPolicyDetailsRepository.findById(policyId)
 				.orElseThrow(() -> new RuntimeException("Policy not found with id: " + policyId));
+		policy.setAccessName(request.getAccessName());
+		policy.setAccessDesc(request.getAccessDesc());
+		policy.setStatus(request.getStatus());
 		return updatePolicyFromRequest(policy, request);
 	}
 
 	private AccessPolicyDetails updatePolicyFromRequest(AccessPolicyDetails policy, SystemAccessPolicyRequest request) {
-		policy.setAccessName(request.getAccessName());
-		policy.setAccessDesc(request.getAccessDesc());
 
 		AccessPolicyMaster apm = accessPolicyMasterRepository.findById(request.getMasterPolicyId())
 				.orElseThrow(() -> new RuntimeException("AccessPolicyMaster not found"));
@@ -213,72 +212,18 @@ public class PolicyServiceImpl implements PolicyService {
 				.orElseThrow(() -> new RuntimeException("ServiceDetails not found"));
 		policy.setServiceDetails(sd);
 
+		if (request.getMenuId() != null) {
+			TblSystemMenu menu = tblSystemMenuRepository.findById(request.getMenuId())
+					.orElseThrow(() -> new RuntimeException("Menu not found"));
+			policy.setMenu(menu);
+		}
+
 		SysAccessLevel sal = sysAccessLevelRepository.findById(request.getSysAccessLvlId())
 				.orElseThrow(() -> new RuntimeException("SysAccessLevel not found"));
 		policy.setSysAccessLevel(sal);
 
-		policy.setStatus(request.getStatus());
-
 		policy.setCreationDate(LocalDateTime.now());
 		policy.setLastUpdate(LocalDateTime.now());
 		return accessPolicyDetailsRepository.save(policy);
-	}
-
-	private PolicyResponse mapToPolicyResponse(VwAppliedAccessPolicies policy) {
-		ServiceDetails serviceDetails = new ServiceDetails();
-		serviceDetails.setServiceId(policy.getServiceId());
-		serviceDetails.setServiceName(policy.getServiceName());
-		serviceDetails.setServiceDescp(policy.getServiceDescp());
-		serviceDetails.setServiceCatg(policy.getServiceCatg());
-		serviceDetails.setParentServiceId(policy.getParentServiceId());
-		serviceDetails.setStatus(policy.getServiceStatus());
-
-		PolicyResponse response = new PolicyResponse();
-		response.setPolicyId(policy.getPolicyId());
-		response.setPolicyName(policy.getAccessName());
-		response.setPolicyDescription(policy.getAccessDesc());
-		response.setServiceDetails(serviceDetails);
-		response.setPermissions(getPermissionsFromSysAccessLevel(policy.getSysAccessLvlname()));
-		response.setMenuId(policy.getMenuId());
-		response.setMenuName(policy.getMenuName());
-		response.setMenuIcon(policy.getMenuIcon());
-		response.setMenuNameToDisplay(policy.getMenuNameToDisplay());
-		response.setHintText(policy.getHintText());
-		response.setMenuDescp(policy.getMenuDescp());
-		response.setMenuLevel(policy.getMenuLevel());
-		response.setHasChild(policy.isHasChild());
-		response.setChildMenu(policy.isChildMenu());
-		response.setShowOrder(policy.getShowOrder());
-		response.setTargetLink(policy.getTargetLink());
-		response.setTargetType(policy.getTargetType());
-		response.setMenuStatus(policy.getMenuStatus());
-		response.setSuAccessOnly(policy.getSuAccessOnly());
-
-		return response;
-	}
-
-	private List<String> getPermissionsFromSysAccessLevel(SysAccessLevel.SysAccessLvlName lvlName) {
-		if (lvlName == null) {
-			return Collections.emptyList();
-		}
-		List<String> permissions = new ArrayList<>();
-		switch (lvlName) {
-			case ALL_ACCESS:
-			case SYSTEM_ADMIN:
-			case INSTANCE_ADMIN:
-			case SERVICE_OWNER:
-			case READ_WRITE_DELETE_CREATE:
-				permissions.add("CREATE");
-			case READ_WRITE_DELETE:
-				permissions.add("DELETE");
-			case READ_WRITE:
-				permissions.add("WRITE");
-			case READ:
-				permissions.add("READ");
-				break;
-			default:
-				break;
-		}
-		return permissions;
 	}
 }

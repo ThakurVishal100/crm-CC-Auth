@@ -6,7 +6,7 @@ import com.jss.jiffy_edge.dao.entities.auth.TblUsers;
 import com.jss.jiffy_edge.models.auth.UserResponse;
 
 @Component
-public class UserConvertor {
+public class  UserConvertor {
 
 	public UserResponse entityToResponse(TblUsers entity) {
 		UserResponse response = new UserResponse();

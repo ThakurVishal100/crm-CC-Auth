@@ -62,7 +62,7 @@ public class AuthController {
 
 	@PostMapping("/login")
 	public ResponseEntity<LoginResponse> login(@RequestBody UserLoginRequest loginRequest, HttpSession session,
-			HttpServletRequest httpRequest) {
+											   HttpServletRequest httpRequest) {
 		UserResponse userResponse = authService.login(loginRequest);
 		String jwtToken = jwtUtil.generateToken(userResponse.getUserId(), userResponse.getEmail(),
 				userResponse.getRoleName(), userResponse.getRoleId(), session.getId());
@@ -78,7 +78,7 @@ public class AuthController {
 
 	@PostMapping("/google-signin")
 	public ResponseEntity<?> googleSignIn(@RequestBody Map<String, String> requestBody, HttpSession session,
-			HttpServletRequest httpRequest) {
+										  HttpServletRequest httpRequest) {
 		Map<String, Object> response = new HashMap<>();
 		try {
 

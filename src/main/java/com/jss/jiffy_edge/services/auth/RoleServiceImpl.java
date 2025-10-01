@@ -1,5 +1,6 @@
 package com.jss.jiffy_edge.services.auth;
 
+import com.jss.jiffy_edge.convertors.auth.RoleConverter;
 import com.jss.jiffy_edge.dao.entities.auth.TblUserRoles;
 import com.jss.jiffy_edge.dao.entities.auth.TblUsers;
 import com.jss.jiffy_edge.dao.repo.auth.TblUserRolesRepository;
@@ -21,14 +22,18 @@ public class RoleServiceImpl implements RoleService {
     @Autowired
     private TblUserRolesRepository roleRepository;
 
+    @Autowired
+    private RoleConverter roleConverter;
+
     @Override
     public TblUserRoles createRole(RoleRequest roleRequest) {
         if (SUPER_USER_ROLE_NAME.equalsIgnoreCase(roleRequest.getRoleName())) {
             throw new SecurityException("Creation of Super User role is not allowed.");
         }
-        TblUserRoles role = new TblUserRoles();
+        TblUserRoles role = roleConverter.toEntity(roleRequest);
         role.setCreationDate(new Date());
-        return updateRoleFromRequest(role, roleRequest);
+        role.setLastUpdate(new Date());
+        return roleRepository.save(role);
     }
 
     @Override
@@ -38,7 +43,16 @@ public class RoleServiceImpl implements RoleService {
         }
         TblUserRoles role = roleRepository.findById(roleId)
                 .orElseThrow(() -> new RuntimeException("Role not found with id: " + roleId));
-        return updateRoleFromRequest(role, roleRequest);
+
+        role.setRoleName(roleRequest.getRoleName());
+        role.setRoleCatg(roleRequest.getRoleCatg());
+        role.setRoleDesc(roleRequest.getRoleDesc());
+        role.setOwnerType(roleRequest.getOwnerType());
+        role.setOwnerId(roleRequest.getOwnerId());
+        role.setDefaAccessPolicyId(roleRequest.getDefaAccessPolicyId());
+        role.setStatus(roleRequest.getStatus());
+        role.setLastUpdate(new Date());
+        return roleRepository.save(role);
     }
 
     @Override
@@ -77,17 +91,4 @@ public class RoleServiceImpl implements RoleService {
             return roleRepository.findByRoleCatgAndRoleIdNot(TblUsers.UserCategory.EXTERNAL_USER, SUPER_USER_ROLE_ID);
         }
     }
-
-    private TblUserRoles updateRoleFromRequest(TblUserRoles role, RoleRequest request) {
-        role.setRoleName(request.getRoleName());
-        role.setRoleCatg(request.getRoleCatg());
-        role.setRoleDesc(request.getRoleDesc());
-        role.setOwnerType(request.getOwnerType());
-        role.setOwnerId(request.getOwnerId());
-        role.setDefaAccessPolicyId(request.getDefaAccessPolicyId());
-        role.setStatus(request.getStatus());
-        role.setLastUpdate(new Date());
-        return roleRepository.save(role);
-    }
 }
-

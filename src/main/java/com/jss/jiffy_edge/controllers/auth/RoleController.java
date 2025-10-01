@@ -25,13 +25,13 @@ public class RoleController {
         return ResponseEntity.ok(roleService.createRole(roleRequest));
     }
 
-    @PutMapping("/{id}")
+    @PostMapping("/update/{id}")
     @Operation(summary = "update the role",description = "this will update the existing role")
     public ResponseEntity<TblUserRoles> updateRole(@PathVariable Integer id, @RequestBody RoleRequest roleRequest) {
         return ResponseEntity.ok(roleService.updateRole(id, roleRequest));
     }
 
-    @DeleteMapping("/{id}")
+    @PostMapping("/delete/{id}")
     @Operation(summary = "delete the role",description = "this will delete the existing role")
     public ResponseEntity<Void> deleteRole(@PathVariable Integer id) {
         roleService.deleteRole(id);
@@ -46,4 +46,3 @@ public class RoleController {
         return ResponseEntity.ok(roleService.getAllRoles(userRoleId));
     }
 }
-

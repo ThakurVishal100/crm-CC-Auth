@@ -1,11 +1,11 @@
 package com.jss.jiffy_edge.controllers;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,18 +41,17 @@ public class UserController {
 		return (ResponseEntity<?>) userService.getAllUsers(requesterId);
 	}
 
-	@PutMapping("/{id}")
+	@PostMapping("/update/{id}")
 	@Operation(summary = "Update a user", description = "This will update an existing user's details")
 	public ResponseEntity<UserResponse> updateUser(@PathVariable Integer id, @RequestBody UserUpdateRequest request) {
 		return ResponseEntity.ok(authService.updateUser(id, request));
 	}
 
-	@DeleteMapping("/{id}")
+	@PostMapping("/delete/{id}")
 	@Operation(summary = "Delete a user", description = "This will deactivate an existing user (soft delete)")
 	public ResponseEntity<Void> deleteUser(@PathVariable Integer id) {
-		authService.deleteUser(id);
+		authService.deactivateUser(id);
 		return ResponseEntity.noContent().build();
 	}
 
 }
-

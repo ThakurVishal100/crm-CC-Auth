@@ -9,4 +9,3 @@ public interface RoleService {
     void deleteRole(Integer roleId);
     Object getAllRoles(Integer userRoleId);
 }
-

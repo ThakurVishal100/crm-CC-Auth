@@ -84,7 +84,7 @@ public class AuthServiceImpl implements AuthService {
 	}
 
 	@Override
-	public void deleteUser(Integer userId) {
+	public void deactivateUser(Integer userId) {
 		TblUsers user = userRepository.findById(userId)
 				.orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
 
@@ -96,4 +96,3 @@ public class AuthServiceImpl implements AuthService {
 	}
 
 }
-

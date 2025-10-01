@@ -44,7 +44,7 @@ public class ServiceDetailsController {
 		}
 	}
 
-	@PutMapping("updateService/{id}")
+	@PostMapping("updateService/{id}")
 	@Operation(summary = "Update the existing service", description = "This will update the existing service present in the table")
 	public ResponseEntity<?> updateService(@PathVariable Integer id, @RequestBody ServiceDetailsRequest request) {
 		try {
@@ -54,7 +54,7 @@ public class ServiceDetailsController {
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
 		}
 	}
-	@DeleteMapping("deleteService/{id}")
+	@PostMapping("deleteService/{id}")
 	@Operation(summary = "delete the service",description = "this will change the status of the service to inactive")
 	public ResponseEntity<?> deleteService(@PathVariable Integer id){
 		try{

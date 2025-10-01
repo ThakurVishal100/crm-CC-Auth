@@ -4,53 +4,53 @@ import com.jss.jiffy_edge.dao.entities.auth.ServiceDetails.ServiceCategory;
 import com.jss.jiffy_edge.dao.entities.auth.ServiceDetails.Status;
 
 public class ServiceDetailsRequest {
-	
-	 private ServiceCategory serviceCatg;
-	    private String serviceName;
-	    private String serviceDescp;
-	    private Status status;
-	    private String parentServiceName; 
 
-	    
+	private ServiceCategory serviceCatg;
+	private String serviceName;
+	private String serviceDescp;
+	private Status status;
+	private String parentServiceName;
 
-	    public ServiceCategory getServiceCatg() {
-	        return serviceCatg;
-	    }
 
-	    public void setServiceCatg(ServiceCategory serviceCatg) {
-	        this.serviceCatg = serviceCatg;
-	    }
 
-	    public String getServiceName() {
-	        return serviceName;
-	    }
+	public ServiceCategory getServiceCatg() {
+		return serviceCatg;
+	}
 
-	    public void setServiceName(String serviceName) {
-	        this.serviceName = serviceName;
-	    }
+	public void setServiceCatg(ServiceCategory serviceCatg) {
+		this.serviceCatg = serviceCatg;
+	}
 
-	    public String getServiceDescp() {
-	        return serviceDescp;
-	    }
+	public String getServiceName() {
+		return serviceName;
+	}
 
-	    public void setServiceDescp(String serviceDescp) {
-	        this.serviceDescp = serviceDescp;
-	    }
+	public void setServiceName(String serviceName) {
+		this.serviceName = serviceName;
+	}
 
-	    public Status getStatus() {
-	        return status;
-	    }
+	public String getServiceDescp() {
+		return serviceDescp;
+	}
 
-	    public void setStatus(Status status) {
-	        this.status = status;
-	    }
+	public void setServiceDescp(String serviceDescp) {
+		this.serviceDescp = serviceDescp;
+	}
 
-	    public String getParentServiceName() {
-	        return parentServiceName;
-	    }
+	public Status getStatus() {
+		return status;
+	}
 
-	    public void setParentServiceName(String parentServiceName) {
-	        this.parentServiceName = parentServiceName;
-	    }
+	public void setStatus(Status status) {
+		this.status = status;
+	}
+
+	public String getParentServiceName() {
+		return parentServiceName;
+	}
+
+	public void setParentServiceName(String parentServiceName) {
+		this.parentServiceName = parentServiceName;
+	}
 
 }

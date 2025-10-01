@@ -29,12 +29,16 @@ public class AccessPolicyDetails {
     private String accessDesc;
 
     @ManyToOne
-    @JoinColumn(name = "master_policy_id", nullable = false) 
+    @JoinColumn(name = "master_policy_id", nullable = false)
     private AccessPolicyMaster accessPolicyMaster;
 
     @ManyToOne
     @JoinColumn(name = "service_id", nullable = false)
     private ServiceDetails serviceDetails;
+
+    @ManyToOne
+    @JoinColumn(name = "menu_id") // Added mapping for menu_id
+    private TblSystemMenu menu;
 
     @ManyToOne
     @JoinColumn(name = "sys_access_lvlid", nullable = false)
@@ -93,6 +97,14 @@ public class AccessPolicyDetails {
 
     public void setServiceDetails(ServiceDetails serviceDetails) {
         this.serviceDetails = serviceDetails;
+    }
+
+    public TblSystemMenu getMenu() {
+        return menu;
+    }
+
+    public void setMenu(TblSystemMenu menu) {
+        this.menu = menu;
     }
 
     public SysAccessLevel getSysAccessLevel() {

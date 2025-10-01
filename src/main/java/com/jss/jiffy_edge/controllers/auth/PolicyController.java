@@ -41,7 +41,7 @@ public class PolicyController {
         return ResponseEntity.ok("Permission granted successfully.");
     }
 
-    @PostMapping("/master-policies")
+    @PostMapping("/master-policies/create")
     @Operation(summary = "Create a new master policy", description = "Creates a new master policy.")
     public ResponseEntity<AccessPolicyMaster> createMasterPolicy(@RequestBody MasterPolicyRequest request) {
         return ResponseEntity.ok(policyService.createMasterPolicy(request));
@@ -54,7 +54,7 @@ public class PolicyController {
         return ResponseEntity.ok(policyService.getAllMasterPolicies(requesterRoleId));
     }
 
-    @DeleteMapping("/master-policies/{policyId}")
+    @PostMapping("/master-policies/remove/{policyId}")
     @Operation(summary = "Delete a master policy", description = "Deletes a master policy by setting its status to INACTIVE.")
     public ResponseEntity<Void> deleteMasterPolicy(@PathVariable Integer policyId) {
         policyService.deleteMasterPolicy(policyId);
@@ -91,21 +91,21 @@ public class PolicyController {
         return ResponseEntity.ok(policyService.getAllAccessPolicies());
     }
 
-    @PostMapping("/access-policies")
+    @PostMapping("/access-policies/create")
     @Operation(summary = "Create a new access policy", description = "Creates a new system access policy.")
     public ResponseEntity<AccessPolicyDetails> createAccessPolicy(
             @RequestBody SystemAccessPolicyRequest accessPolicyRequest) {
         return ResponseEntity.ok(policyService.createAccessPolicy(accessPolicyRequest));
     }
 
-    @PutMapping("/access-policies/{policyId}")
+    @PostMapping("/access-policies/update/{policyId}")
     @Operation(summary = "Update an access policy", description = "Updates an existing system access policy.")
     public ResponseEntity<AccessPolicyDetails> updateAccessPolicy(@PathVariable Long policyId,
                                                                   @RequestBody SystemAccessPolicyRequest accessPolicyRequest) {
         return ResponseEntity.ok(policyService.updateAccessPolicy(policyId, accessPolicyRequest));
     }
 
-    @PutMapping("/policies/user")
+    @PostMapping("/policies/user/update")
     @Operation(summary = "Update a user's policy", description = "Allows an external user to update a policy for themselves or a user under them.")
     public ResponseEntity<String> updateUserPolicy(@RequestHeader("Authorization") String token, @RequestBody UpdateUserPolicyRequest request) throws AccessDeniedException {
         Integer requesterId = jwtUtil.getUserIdFromToken(token.substring(7));
@@ -113,7 +113,7 @@ public class PolicyController {
         return ResponseEntity.ok("User policy updated successfully.");
     }
 
-    @DeleteMapping("/access-policies/{policyId}")
+    @PostMapping("/access-policies/remove/{policyId}")
     @Operation(summary = "Delete an access policy", description = "Deletes a system access policy by its ID.")
     public ResponseEntity<Void> deleteAccessPolicy(@PathVariable Long policyId) {
         policyService.deleteAccessPolicy(policyId);

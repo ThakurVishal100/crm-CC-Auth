@@ -3,6 +3,7 @@ package com.jss.jiffy_edge.services.auth;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+import com.jss.jiffy_edge.convertors.auth.ServiceDetailsConverter;
 import org.springframework.stereotype.Service;
 
 import com.jss.jiffy_edge.dao.entities.auth.ServiceDetails;
@@ -15,13 +16,16 @@ import jakarta.persistence.EntityNotFoundException;
 public class ServiceDetailsService {
 
 	private final ServiceDetailsRepository serviceDetailsRepository;
+	private final ServiceDetailsConverter serviceDetailsConverter;
 
-	public ServiceDetailsService(ServiceDetailsRepository serviceDetailsRepository) {
+
+	public ServiceDetailsService(ServiceDetailsRepository serviceDetailsRepository, ServiceDetailsConverter serviceDetailsConverter) {
 		this.serviceDetailsRepository = serviceDetailsRepository;
+		this.serviceDetailsConverter = serviceDetailsConverter;
 	}
 
 	public ServiceDetails createService(ServiceDetailsRequest request) {
-		ServiceDetails newService = new ServiceDetails();
+		ServiceDetails newService = serviceDetailsConverter.toEntity(request);
 
 		Integer parentId = 0;
 
@@ -39,11 +43,6 @@ public class ServiceDetailsService {
 		}
 
 		newService.setParentServiceId(parentId);
-
-		newService.setServiceCatg(request.getServiceCatg());
-		newService.setServiceName(request.getServiceName());
-		newService.setServiceDescp(request.getServiceDescp());
-		newService.setStatus(request.getStatus());
 		newService.setCreatedOn(LocalDateTime.now());
 
 		return serviceDetailsRepository.save(newService);
@@ -52,6 +51,10 @@ public class ServiceDetailsService {
 	public ServiceDetails updateService(Integer id, ServiceDetailsRequest request) {
 		ServiceDetails existingService = serviceDetailsRepository.findById(id)
 				.orElseThrow(() -> new EntityNotFoundException("Service with ID " + id + " not found."));
+
+		ServiceDetails updatedService = serviceDetailsConverter.toEntity(request);
+		updatedService.setServiceId(existingService.getServiceId()); // Keep original ID
+		updatedService.setCreatedOn(existingService.getCreatedOn()); // Keep original creation date
 
 		Integer parentId = 0;
 
@@ -68,18 +71,13 @@ public class ServiceDetailsService {
 			}
 		}
 
-		existingService.setParentServiceId(parentId);
+		updatedService.setParentServiceId(parentId);
+		updatedService.setUpdatedOn(LocalDateTime.now());
 
-		existingService.setServiceCatg(request.getServiceCatg());
-		existingService.setServiceName(request.getServiceName());
-		existingService.setServiceDescp(request.getServiceDescp());
-		existingService.setStatus(request.getStatus());
-		existingService.setUpdatedOn(LocalDateTime.now());
-
-		return serviceDetailsRepository.save(existingService);
+		return serviceDetailsRepository.save(updatedService);
 	}
 
-    public ServiceDetails deleteService(Integer serviceId) {
+	public ServiceDetails deleteService(Integer serviceId) {
 		ServiceDetails service=serviceDetailsRepository.findById(serviceId).
 				orElseThrow(()->new RuntimeException("ServiceId not found with id:"+serviceId));
 		service.setStatus(ServiceDetails.Status.INACTIVE);
