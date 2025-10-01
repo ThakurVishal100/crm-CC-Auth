@@ -25,7 +25,7 @@ public class MenuServiceImpl implements MenuService {
     @Override
     public List<MenuResponse> getAllMenus() {
         List<TblSystemMenu> menus = menuRepository.findAll();
-        return menus.stream().map(menu -> new MenuResponse(menu.getMenuName())).collect(Collectors.toList());
+        return menus.stream().map(this::mapToMenuResponse).collect(Collectors.toList());
     }
 
     @Override
@@ -38,21 +38,27 @@ public class MenuServiceImpl implements MenuService {
     public MenuResponse createMenu(MenuRequest request) {
         validateServiceId(request.getServiceId());
         TblSystemMenu menu = new TblSystemMenu();
+
+        // Logic for generating a hierarchical menu ID
         Integer parentId = request.getParentMenuId() != null ? request.getParentMenuId() : 0;
         Integer newMenuId;
+
         if (parentId == 0) {
+            // Logic for generating a top-level menu ID
             int maxId = menuRepository.findMaxMenuIdByParentId(0).orElse(0);
             newMenuId = maxId + 1;
         } else {
+            // Logic for generating a sub-menu ID
             int maxId = menuRepository.findMaxMenuIdByParentId(parentId)
-                    .orElse(parentId * 100);
+                    .orElse(parentId * 100); // If no children exist, start the sequence
             newMenuId = maxId + 1;
         }
         menu.setMenuId(newMenuId);
+
         updateMenuFromRequest(menu, request);
         menu.setCreatedOn(LocalDateTime.now());
         TblSystemMenu saved = menuRepository.save(menu);
-        return new MenuResponse(saved.getMenuName());
+        return mapToMenuResponse(saved);
     }
 
     @Override
@@ -62,7 +68,7 @@ public class MenuServiceImpl implements MenuService {
         updateMenuFromRequest(menu, request);
         menu.setLastUpdated(LocalDateTime.now());
         TblSystemMenu updated = menuRepository.save(menu);
-        return new MenuResponse(updated.getMenuName());
+        return mapToMenuResponse(updated);
     }
 
     @Override
@@ -104,7 +110,8 @@ public class MenuServiceImpl implements MenuService {
     }
 
     private MenuResponse mapToMenuResponse(TblSystemMenu menu) {
-        // This mapping can be expanded to include more fields if the frontend needs them
-        return new MenuResponse(menu.getMenuName());
+        // Maps the TblSystemMenu entity to the full MenuResponse DTO
+        return new MenuResponse(menu);
     }
 }
+
