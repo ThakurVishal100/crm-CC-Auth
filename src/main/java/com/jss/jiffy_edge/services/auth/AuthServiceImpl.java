@@ -70,6 +70,7 @@ public class AuthServiceImpl implements AuthService {
 		user.setName(request.getName());
 		user.setEmail(request.getEmail());
 		user.setMobile(request.getMobile());
+		user.setStatus(request.getStatus());
 		if (request.getPassword() != null && !request.getPassword().isEmpty()) {
 			user.setPassword(request.getPassword());
 		}

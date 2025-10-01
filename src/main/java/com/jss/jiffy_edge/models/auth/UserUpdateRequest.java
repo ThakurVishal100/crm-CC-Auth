@@ -1,11 +1,22 @@
 package com.jss.jiffy_edge.models.auth;
 
+import com.jss.jiffy_edge.dao.entities.auth.TblUsers;
+
 public class UserUpdateRequest {
     private String name;
     private String email;
     private String password;
     private String mobile;
     private Integer roleId;
+    private TblUsers.UserStatus status;
+
+    public TblUsers.UserStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(TblUsers.UserStatus status) {
+        this.status = status;
+    }
 
     public String getName() {
         return name;
