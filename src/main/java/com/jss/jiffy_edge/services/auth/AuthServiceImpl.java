@@ -34,16 +34,11 @@ public class AuthServiceImpl implements AuthService {
 		TblUserRoles userRole = userRoleRepository.findById(5)
 				.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
 
-		TblUsers entity = new TblUsers();
-		entity.setName(request.getName());
-		entity.setEmail(request.getEmail());
-		entity.setPassword(request.getPassword());
-		entity.setMobile(request.getMobile());
+		TblUsers entity = userConvertor.signupRequestToEntity(request);
 		entity.setStatus(TblUsers.UserStatus.ACTIVE);
 		entity.setRole(userRole);
 		entity.setCreationDate(new Date());
 		entity.setLastUpdate(new Date());
-
 		entity.setUserCatg(TblUsers.UserCategory.EXTERNAL_USER);
 
 		entity = userRepository.save(entity);
@@ -67,13 +62,8 @@ public class AuthServiceImpl implements AuthService {
 		TblUsers user = userRepository.findById(userId)
 				.orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
 
-		user.setName(request.getName());
-		user.setEmail(request.getEmail());
-		user.setMobile(request.getMobile());
-		user.setStatus(request.getStatus());
-		if (request.getPassword() != null && !request.getPassword().isEmpty()) {
-			user.setPassword(request.getPassword());
-		}
+		userConvertor.updateEntityFromRequest(user, request);
+
 		if (request.getRoleId() != null) {
 			TblUserRoles role = userRoleRepository.findById(request.getRoleId())
 					.orElseThrow(() -> new RuntimeException("Role not found with id: " + request.getRoleId()));

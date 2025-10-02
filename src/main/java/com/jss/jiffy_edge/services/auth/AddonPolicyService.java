@@ -10,4 +10,6 @@ public interface AddonPolicyService {
     TblAccessAddonMap createAddonPolicy(AddonPolicyRequest addonPolicyRequest);
     TblAccessAddonMap updateAddonPolicy(Integer addonPolicyId, AddonPolicyRequest addonPolicyRequest);
     void deleteAddonPolicy(Integer addonPolicyId);
+    List<TblAccessAddonMap> getAddonPoliciesByRoleId(Integer roleId);
+    List<TblAccessAddonMap> getAddonPoliciesByUserId(Integer userId);
 }

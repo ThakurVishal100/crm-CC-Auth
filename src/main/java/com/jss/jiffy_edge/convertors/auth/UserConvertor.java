@@ -1,5 +1,7 @@
 package com.jss.jiffy_edge.convertors.auth;
 
+import com.jss.jiffy_edge.models.auth.UserSignupRequest;
+import com.jss.jiffy_edge.models.auth.UserUpdateRequest;
 import org.springframework.stereotype.Component;
 
 import com.jss.jiffy_edge.dao.entities.auth.TblUsers;
@@ -21,6 +23,25 @@ public class  UserConvertor {
 			response.setRoleName(entity.getRole().getRoleName());
 		}
 		return response;
+	}
+
+	public TblUsers signupRequestToEntity(UserSignupRequest request) {
+		TblUsers entity = new TblUsers();
+		entity.setName(request.getName());
+		entity.setEmail(request.getEmail());
+		entity.setPassword(request.getPassword());
+		entity.setMobile(request.getMobile());
+		return entity;
+	}
+
+	public void updateEntityFromRequest(TblUsers entity, UserUpdateRequest request) {
+		entity.setName(request.getName());
+		entity.setEmail(request.getEmail());
+		entity.setMobile(request.getMobile());
+		entity.setStatus(request.getStatus());
+		if (request.getPassword() != null && !request.getPassword().isEmpty()) {
+			entity.setPassword(request.getPassword());
+		}
 	}
 
 }

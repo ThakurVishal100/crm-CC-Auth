@@ -41,4 +41,17 @@ public class AddonPoliciesController {
         addonPolicyService.deleteAddonPolicy(id);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/role/{roleId}")
+    @Operation(summary = "Get addon policies by Role ID", description = "Returns a list of addon policies for a specific role.")
+    public ResponseEntity<List<TblAccessAddonMap>> getAddonPoliciesByRoleId(@PathVariable Integer roleId) {
+        return ResponseEntity.ok(addonPolicyService.getAddonPoliciesByRoleId(roleId));
+    }
+
+    @GetMapping("/user/{userId}")
+    @Operation(summary = "Get addon policies by User ID", description = "Returns a list of addon policies for a specific user.")
+    public ResponseEntity<List<TblAccessAddonMap>> getAddonPoliciesByUserId(@PathVariable Integer userId) {
+        return ResponseEntity.ok(addonPolicyService.getAddonPoliciesByUserId(userId));
+    }
 }
+
