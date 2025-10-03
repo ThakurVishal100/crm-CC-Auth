@@ -27,6 +27,14 @@ public class PolicyConverter {
         return entity;
     }
 
+    public void updateMasterEntityFromRequest(AccessPolicyMaster entity, MasterPolicyRequest request) {
+        entity.setPolicyName(request.getPolicyName());
+        entity.setDescp(request.getDescp());
+        entity.setStatus(request.getStatus());
+        entity.setCategory(request.getCategory());
+        entity.setAvlForSuonly(request.getAvlForSuonly());
+    }
+
     public AccessPolicyDetails toDetailsEntity(SystemAccessPolicyRequest request) {
         AccessPolicyDetails entity = new AccessPolicyDetails();
         entity.setAccessName(request.getAccessName());

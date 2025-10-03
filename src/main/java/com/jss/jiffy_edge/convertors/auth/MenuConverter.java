@@ -12,10 +12,11 @@ public class MenuConverter {
         TblSystemMenu entity = new TblSystemMenu();
         entity.setMenuName(request.getMenuName());
         entity.setDisplayName(request.getDisplayName());
-        entity.setDescription(request.getDescription());
+        entity.setMenuDescp(request.getDescription());
         entity.setServiceId(request.getServiceId());
         entity.setMenuLevel(request.getMenuLevel());
         entity.setShowOrder(request.getShowOrder());
+        entity.setHintText(request.getHintText());
         entity.setTargetLink(request.getTargetLink());
         entity.setParentMenuId(request.getParentMenuId() != null ? request.getParentMenuId() : 0);
         entity.setIsChildMenu(request.getIsChildMenu() != null ? request.getIsChildMenu() : entity.getParentMenuId() > 0);

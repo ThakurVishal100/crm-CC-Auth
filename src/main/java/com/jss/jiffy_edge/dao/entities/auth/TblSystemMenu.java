@@ -16,7 +16,6 @@ import jakarta.persistence.Table;
 public class TblSystemMenu {
 
 	@Id
-//	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "menu_id")
 	private Integer menuId;
 
@@ -27,7 +26,7 @@ public class TblSystemMenu {
 	private String displayName;
 
 	@Column(name = "hint_text", length = 250)
-	private String description; // mapped with frontend "Description"
+	private String hintText;
 
 	@Column(name = "menu_descp", length = 250)
 	private String menuDescp;
@@ -52,6 +51,14 @@ public class TblSystemMenu {
 
 	@Column(name = "target_link", nullable = false, length = 500)
 	private String targetLink;
+
+	public String getHintText() {
+		return hintText;
+	}
+
+	public void setHintText(String hintText) {
+		this.hintText = hintText;
+	}
 
 	@Enumerated(EnumType.STRING)
 	@Column(name = "target_type")
@@ -112,13 +119,6 @@ public class TblSystemMenu {
 		this.displayName = displayName;
 	}
 
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
 
 	public String getMenuDescp() {
 		return menuDescp;

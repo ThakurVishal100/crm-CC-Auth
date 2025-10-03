@@ -34,6 +34,10 @@ public class AuthServiceImpl implements AuthService {
 		TblUserRoles userRole = userRoleRepository.findById(5)
 				.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
 
+		if (userRole.getStatus() != TblUserRoles.UserStatus.ACTIVE) {
+			throw new RuntimeException("The assigned role is not active.");
+		}
+
 		TblUsers entity = userConvertor.signupRequestToEntity(request);
 		entity.setStatus(TblUsers.UserStatus.ACTIVE);
 		entity.setRole(userRole);
@@ -49,6 +53,14 @@ public class AuthServiceImpl implements AuthService {
 	public UserResponse login(UserLoginRequest request) {
 		TblUsers entity = userRepository.findByEmail(request.getEmail())
 				.orElseThrow(() -> new RuntimeException("User not found"));
+
+		if (entity.getStatus() != TblUsers.UserStatus.ACTIVE) {
+			throw new RuntimeException("User account is not active.");
+		}
+
+		if (entity.getRole().getStatus() != TblUserRoles.UserStatus.ACTIVE) {
+			throw new RuntimeException("User role is not active.");
+		}
 
 		if (!entity.getPassword().equals(request.getPassword())) {
 			throw new RuntimeException("Invalid credentials");
@@ -67,6 +79,10 @@ public class AuthServiceImpl implements AuthService {
 		if (request.getRoleId() != null) {
 			TblUserRoles role = userRoleRepository.findById(request.getRoleId())
 					.orElseThrow(() -> new RuntimeException("Role not found with id: " + request.getRoleId()));
+
+			if (role.getStatus() != TblUserRoles.UserStatus.ACTIVE) {
+				throw new RuntimeException("Cannot assign an inactive role.");
+			}
 			user.setRole(role);
 		}
 		user.setLastUpdate(new Date());

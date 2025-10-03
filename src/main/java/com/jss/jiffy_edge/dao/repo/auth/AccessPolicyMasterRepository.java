@@ -9,6 +9,9 @@ import java.util.List;
 @Repository
 public interface AccessPolicyMasterRepository extends JpaRepository<AccessPolicyMaster, Integer> {
     List<AccessPolicyMaster> findByAvlForSuonlyNot(Integer value);
-
     List<AccessPolicyMaster> findByCategory(AccessPolicyMaster.Category category);
+
+    List<AccessPolicyMaster> findByStatus(AccessPolicyMaster.Status status);
+    List<AccessPolicyMaster> findByAvlForSuonlyNotAndStatus(Integer value, AccessPolicyMaster.Status status);
+    List<AccessPolicyMaster> findByCategoryAndStatus(AccessPolicyMaster.Category category, AccessPolicyMaster.Status status);
 }

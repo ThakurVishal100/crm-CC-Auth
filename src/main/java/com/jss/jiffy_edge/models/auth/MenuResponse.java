@@ -20,15 +20,15 @@ public class MenuResponse {
     private String status;
     private String superUserOnly;
 
-    // No-arg constructor for JSON libraries
+
     public MenuResponse() {}
 
-    // Constructor to easily map from the database entity
+
     public MenuResponse(TblSystemMenu menu) {
         this.menuId = menu.getMenuId();
         this.menuName = menu.getMenuName();
         this.displayName = menu.getDisplayName();
-        this.description = menu.getDescription();
+        this.description = menu.getMenuDescp();
         this.menuDescp = menu.getMenuDescp();
         this.menuLevel = menu.getMenuLevel();
         this.parentMenuId = menu.getParentMenuId();
@@ -39,7 +39,7 @@ public class MenuResponse {
         this.targetLink = menu.getTargetLink();
         this.serviceId = menu.getServiceId();
 
-        // Convert enums to strings for the JSON response
+
         if (menu.getTargetType() != null) {
             this.targetType = menu.getTargetType().name();
         }
@@ -51,7 +51,7 @@ public class MenuResponse {
         }
     }
 
-    // Getters and Setters
+
 
     public Integer getMenuId() {
         return menuId;

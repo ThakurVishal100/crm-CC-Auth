@@ -13,6 +13,8 @@ import com.jss.jiffy_edge.models.auth.*;
 public interface PolicyService {
     AccessPolicyMaster createMasterPolicy(MasterPolicyRequest request);
 
+    AccessPolicyMaster updateMasterPolicy(Integer policyId, MasterPolicyRequest request);
+
     void deleteMasterPolicy(Integer policyId);
 
     List<AccessPolicyMaster> getAllMasterPolicies(Integer requesterRoleId);
@@ -36,7 +38,7 @@ public interface PolicyService {
 
     AccessPolicyDetails createAccessPolicy(SystemAccessPolicyRequest request);
 
-    void deleteAccessPolicy(Long policyId);
+    AccessPolicyDetails deleteAccessPolicy(Long policyId);
 
     void updateUserPolicy(Integer requesterId, UpdateUserPolicyRequest request) throws AccessDeniedException;
 

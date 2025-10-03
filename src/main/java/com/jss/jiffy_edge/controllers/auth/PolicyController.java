@@ -47,8 +47,14 @@ public class PolicyController {
         return ResponseEntity.ok(policyService.createMasterPolicy(request));
     }
 
+    @PostMapping("/master-policies/update/{policyId}")
+    @Operation(summary = "Update a master policy", description = "Updates an existing master policy.")
+    public ResponseEntity<AccessPolicyMaster> updateMasterPolicy(@PathVariable Integer policyId, @RequestBody MasterPolicyRequest request) {
+        return ResponseEntity.ok(policyService.updateMasterPolicy(policyId, request));
+    }
+
     @GetMapping("/master-policies")
-    @Operation(summary = "Get all master policies", description = "Returns a list of all master policies, hiding super user policies for non-super users.")
+    @Operation(summary = "Get all master policies", description = "Returns a list of all master policies, hiding super user policies for non-super users. Can be filtered by status.")
     public ResponseEntity<List<AccessPolicyMaster>> getAllMasterPolicies(@RequestHeader("Authorization") String token) {
         Integer requesterRoleId = jwtUtil.getRoleIdFromToken(token.substring(7));
         return ResponseEntity.ok(policyService.getAllMasterPolicies(requesterRoleId));

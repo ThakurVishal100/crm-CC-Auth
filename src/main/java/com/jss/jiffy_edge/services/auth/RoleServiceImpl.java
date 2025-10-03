@@ -78,7 +78,7 @@ public class RoleServiceImpl implements RoleService {
 
         if (requesterRole.getRoleCatg() == TblUsers.UserCategory.SYSTEM_USER) {
             // System users see both system and external roles, categorized
-            List<TblUserRoles> allRoles = roleRepository.findByRoleIdNot(SUPER_USER_ROLE_ID);
+            List<TblUserRoles> allRoles = roleRepository.findByRoleIdNotAndStatus(SUPER_USER_ROLE_ID, TblUserRoles.UserStatus.ACTIVE);
             List<TblUserRoles> systemRoles = allRoles.stream()
                     .filter(role -> role.getRoleCatg() == TblUsers.UserCategory.SYSTEM_USER)
                     .collect(Collectors.toList());
@@ -88,7 +88,7 @@ public class RoleServiceImpl implements RoleService {
             return new CategorizedRolesResponse(systemRoles, externalRoles);
         } else {
             // External users see only external roles
-            return roleRepository.findByRoleCatgAndRoleIdNot(TblUsers.UserCategory.EXTERNAL_USER, SUPER_USER_ROLE_ID);
+            return roleRepository.findByRoleCatgAndRoleIdNotAndStatus(TblUsers.UserCategory.EXTERNAL_USER, SUPER_USER_ROLE_ID, TblUserRoles.UserStatus.ACTIVE);
         }
     }
 }

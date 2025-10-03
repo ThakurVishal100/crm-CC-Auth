@@ -8,10 +8,20 @@ public class MenuRequest {
 	private Integer menuLevel;
 	private Integer showOrder;
 	private String targetLink;
+
+	public String getHintText() {
+		return hintText;
+	}
+
+	public void setHintText(String hintText) {
+		this.hintText = hintText;
+	}
+
 	private String targetType;
 	private Boolean hasChildren;
 	private String superUserOnly;
 	private String status;
+	private String hintText;
 
 	private Integer parentMenuId;
 	private Boolean isChildMenu;

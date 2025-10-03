@@ -28,15 +28,16 @@ public class MenuServiceImpl implements MenuService {
 
     @Override
     public List<MenuResponse> getAllMenus() {
-        List<TblSystemMenu> menus = menuRepository.findAll();
+        List<TblSystemMenu> menus = menuRepository.findByStatus(TblSystemMenu.Status.ACTIVE);
         return menus.stream().map(menuConverter::toResponse).collect(Collectors.toList());
     }
 
     @Override
     public List<MenuResponse> getMenusByServiceId(Integer serviceId) {
-        List<TblSystemMenu> menus = menuRepository.findByServiceId(serviceId);
+        List<TblSystemMenu> menus = menuRepository.findByServiceIdAndStatus(serviceId, TblSystemMenu.Status.ACTIVE);
         return menus.stream().map(menuConverter::toResponse).collect(Collectors.toList());
     }
+
 
     @Override
     public MenuResponse createMenu(MenuRequest request) {
@@ -59,6 +60,7 @@ public class MenuServiceImpl implements MenuService {
         }
         menu.setMenuId(newMenuId);
         menu.setCreatedOn(LocalDateTime.now());
+        menu.setLastUpdated(LocalDateTime.now());
         TblSystemMenu saved = menuRepository.save(menu);
         return menuConverter.toResponse(saved);
     }

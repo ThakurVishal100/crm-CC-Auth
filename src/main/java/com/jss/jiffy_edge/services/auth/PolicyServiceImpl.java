@@ -61,6 +61,15 @@ public class PolicyServiceImpl implements PolicyService {
 	}
 
 	@Override
+	public AccessPolicyMaster updateMasterPolicy(Integer policyId, MasterPolicyRequest request) {
+		AccessPolicyMaster masterPolicy = accessPolicyMasterRepository.findById(policyId)
+				.orElseThrow(() -> new RuntimeException("Master policy not found with id: " + policyId));
+
+		policyConverter.updateMasterEntityFromRequest(masterPolicy, request);
+		return accessPolicyMasterRepository.save(masterPolicy);
+	}
+
+	@Override
 	public void deleteMasterPolicy(Integer policyId) {
 		AccessPolicyMaster masterPolicy = accessPolicyMasterRepository.findById(policyId)
 				.orElseThrow(() -> new RuntimeException("Master policy not found with id: " + policyId));
@@ -70,10 +79,10 @@ public class PolicyServiceImpl implements PolicyService {
 
 	@Override
 	public List<PermissionGrantResponse> getPermissionsForGrantPage() {
-		List<ServiceDetails> services = serviceDetailsRepository.findAll();
+		List<ServiceDetails> services = serviceDetailsRepository.findByStatus(ServiceDetails.Status.ACTIVE);
 		return services.stream()
 				.map(service -> {
-					List<TblSystemMenu> menus = tblSystemMenuRepository.findByServiceId(service.getServiceId());
+					List<TblSystemMenu> menus = tblSystemMenuRepository.findByServiceIdAndStatus(service.getServiceId(), TblSystemMenu.Status.ACTIVE);
 					return new PermissionGrantResponse(service, menus);
 				})
 				.collect(Collectors.toList());
@@ -101,10 +110,12 @@ public class PolicyServiceImpl implements PolicyService {
 	}
 
 
+
 	@Override
 	public List<AccessPolicyMaster> getAllMasterPolicies(Integer requesterRoleId) {
 		TblUserRoles requesterRole = tblUserRolesRepository.findById(requesterRoleId)
 				.orElseThrow(() -> new RuntimeException("Requesting user's role not found."));
+
 
 		if (SUPER_USER_ROLE_ID.equals(requesterRoleId)) {
 			return accessPolicyMasterRepository.findAll();
@@ -168,7 +179,7 @@ public class PolicyServiceImpl implements PolicyService {
 	}
 	@Override
 	public List<ServiceDetails> getAllServices() {
-		return serviceDetailsRepository.findAll();
+		return serviceDetailsRepository.findByStatus(ServiceDetails.Status.ACTIVE);
 	}
 
 	@Override
@@ -178,7 +189,7 @@ public class PolicyServiceImpl implements PolicyService {
 
 	@Override
 	public List<AccessPolicyDetails> getAllAccessPolicies() {
-		return accessPolicyDetailsRepository.findAll();
+		return accessPolicyDetailsRepository.findByStatus(AccessPolicyDetails.Status.ACTIVE);
 	}
 
 	@Override
@@ -188,8 +199,11 @@ public class PolicyServiceImpl implements PolicyService {
 	}
 
 	@Override
-	public void deleteAccessPolicy(Long policyId) {
-		accessPolicyDetailsRepository.deleteById(policyId);
+	public AccessPolicyDetails deleteAccessPolicy(Long policyId) {
+		AccessPolicyDetails policy = accessPolicyDetailsRepository.findById(policyId)
+				.orElseThrow(() -> new RuntimeException("Policy not found with id: " + policyId));
+		policy.setStatus(AccessPolicyDetails.Status.INACTIVE);
+		return accessPolicyDetailsRepository.save(policy);
 	}
 
 	@Override

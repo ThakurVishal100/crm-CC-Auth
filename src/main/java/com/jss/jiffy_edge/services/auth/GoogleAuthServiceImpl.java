@@ -1,5 +1,7 @@
 package com.jss.jiffy_edge.services.auth;
 
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Optional;
@@ -29,7 +31,7 @@ public class GoogleAuthServiceImpl {
 	@Autowired
 	private TblUserRolesRepository roleRepository;
 
-	public TblUsers verifyAndLoginUser(String token) {
+	public TblUsers verifyAndLoginUser(String token) throws GeneralSecurityException, IOException {
 		try {
 
 			GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(new NetHttpTransport(),
@@ -51,6 +53,17 @@ public class GoogleAuthServiceImpl {
 
 			if (existingUser.isPresent()) {
 				user = existingUser.get();
+
+
+				if (user.getStatus() != TblUsers.UserStatus.ACTIVE) {
+					throw new RuntimeException("User account is not active.");
+				}
+
+
+				if (user.getRole().getStatus() != TblUserRoles.UserStatus.ACTIVE) {
+					throw new RuntimeException("User role is not active.");
+				}
+
 			} else {
 				user = new TblUsers();
 				user.setEmail(email);
@@ -82,6 +95,9 @@ public class GoogleAuthServiceImpl {
 			return user;
 
 		} catch (Exception e) {
+			if (e instanceof RuntimeException) {
+				throw e;
+			}
 			throw new RuntimeException("Google Token verification failed! " + e.getMessage());
 		}
 	}

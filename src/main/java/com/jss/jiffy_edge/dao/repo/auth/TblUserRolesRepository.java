@@ -20,5 +20,9 @@ public interface TblUserRolesRepository extends JpaRepository<TblUserRoles, Inte
 
 	List<TblUserRoles> findByRoleIdNot(Integer roleId);
 
+	List<TblUserRoles> findByRoleIdNotAndStatus(Integer roleId, TblUserRoles.UserStatus status);
+
+	List<TblUserRoles> findByRoleCatgAndRoleIdNotAndStatus(TblUsers.UserCategory roleCatg, Integer roleId, TblUserRoles.UserStatus status);
+
 }
 

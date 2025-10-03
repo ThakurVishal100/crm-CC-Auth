@@ -13,6 +13,10 @@ import java.util.Optional;
 public interface TblSystemMenuRepository extends JpaRepository<TblSystemMenu, Integer> {
     List<TblSystemMenu> findByServiceId(Integer serviceId);
 
+    List<TblSystemMenu> findByStatus(TblSystemMenu.Status status);
+
+    List<TblSystemMenu> findByServiceIdAndStatus(Integer serviceId, TblSystemMenu.Status status);
+
     @Query("SELECT MAX(m.menuId) FROM TblSystemMenu m WHERE m.parentMenuId = :parentId")
     Optional<Integer> findMaxMenuIdByParentId(@Param("parentId") Integer parentId);
 
